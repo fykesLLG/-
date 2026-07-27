@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOT Browser</title>
+    <style>
+        /* Минималистичный темный дизайн */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #0a0a0c; color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
+        .search-container { width: 100%; max-width: 500px; text-align: center; }
+        h1 { font-size: 2.5rem; margin-bottom: 30px; font-weight: 700; letter-spacing: -1px; background: linear-gradient(45deg, #00ffcc, #0077ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        input { width: 100%; padding: 16px 22px; font-size: 16px; border: 1px solid #222226; border-radius: 30px; background: #141419; color: #fff; outline: none; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        input:focus { border-color: #00ffcc; box-shadow: 0 0 15px rgba(0, 255, 204, 0.2); }
+        button { margin-top: 20px; width: 100%; max-width: 200px; padding: 14px; font-size: 16px; font-weight: 600; border: none; border-radius: 25px; background: #ffffff; color: #0a0a0c; cursor: pointer; transition: transform 0.2s, opacity 0.2s; }
+        button:active { transform: scale(0.98); opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+    <div class="search-container">
+        <h1>HOT Browser</h1>
+        <!-- Поле ввода запроса -->
+        <input type="text" id="search-query" placeholder="Введите поисковый запрос или URL сайта..." autofocus>
+        <!-- Кнопка активации поиска -->
+        <button onclick="startSearch()">Найти</button>
+    </div>
+
+    <script>
+        // Слушаем нажатие клавиши Enter в поле ввода, чтобы искать без клика по кнопке
+        document.getElementById('search-query').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') startSearch();
+        });
+
+        function startSearch() {
+            let val = document.getElementById('search-query').value.trim();
+            if (!val) return;
+
+            // Проверка: регулярное выражение определяет, введена ссылка или просто слова
+            const isUrl = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/i.test(val);
+
+            if (isUrl) {
+                // Если это ссылка, проверяем протокол и открываем напрямую во всё окно
+                if (!/^https?:\/\//i.test(val)) {
+                    val = 'https://' + val;
+                }
+                window.top.location.href = val;
+            } else {
+                // Если это поисковый запрос (например "игры"), шлем в SearXNG (выдача Google+Bing без рекламы)
+                window.top.location.href = 'https://searx.be' + encodeURIComponent(val);
+                
+                // Если захочешь Яндекс, просто сотри строку выше и раскомментируй эту:
+                // window.top.location.href = 'https://yandex.ru' + encodeURIComponent(val);
+            }
+        }
+    </script>
+</body>
+</html>
